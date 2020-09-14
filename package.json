@@ -11,7 +11,7 @@
   "dependencies": {
     "crypto-hash": "^1.3.0",
     "dotenv": "^8.2.0",
-    "netlify": "^4.3.6",
+    "netlify": "^4.3.13",
     "stream": "^0.0.2"
   }
 }
