@@ -6,6 +6,8 @@ const NetlifyAPI = require('netlify')
 const client = new NetlifyAPI(process.env.NETLIFY_API_TOKEN)
 const site_id = 'b8d481fc-f70c-45f8-9242-3936c27fe7e6'
 
+const fetch = require('node-fetch')
+
 const uploadFile = async ({ deployId, path, buffer }) => {
     const bufferStream = new stream.PassThrough()
     bufferStream.end(buffer)
@@ -17,6 +19,23 @@ const uploadFile = async ({ deployId, path, buffer }) => {
     })
 
     return result
+}
+
+const directUploadFile = async ({ deployId, path, buffer }) => {
+
+    const uri = `https://api.netlify.com/api/v1/deploys/${deployId}/files/${path}`
+    
+    const options = {
+      method: 'PUT',
+      headers: {
+      	'Authorization': `Bearer ${process.env.NETLIFY_API_TOKEN}`,
+        'Content-Type': 'application/octet-stream'
+      },
+      body: buffer
+    }
+
+    const result = await fetch(uri, options)
+    return await result.json()
 }
 
 const upload = async () => {
@@ -73,19 +92,20 @@ const upload = async () => {
 	//console.log(uploadList)
 
 	result = await Promise.all(
-		uploadList.map(item => uploadFile(item))
+		//uploadList.map(item => uploadFile(item))
+		uploadList.map(item => directUploadFile(item))
 	)
-	console.log('Why are all fields capitalized?')
+	console.log('Why are all fields capitalized, even without the js-client?')
 	console.log(result)
 
-	console.log('.. but other endpoints are *NOT* capitalized?')
-	let site
-	try {
-		site = await client.getSite({ site_id })
-	} catch (e) {
-		console.log(e.json)
-	}
-	console.log(site)
+	//console.log('.. but other endpoints are *NOT* capitalized?')
+	//let site
+	//try {
+	//	site = await client.getSite({ site_id })
+	//} catch (e) {
+	//	console.log(e.json)
+	//}
+	//console.log(site)
 
 }
 
