@@ -70,13 +70,22 @@ const upload = async () => {
 		path: key,
 		buffer: newFileBuf
 	}]
-	console.log(uploadList)
+	//console.log(uploadList)
 
 	result = await Promise.all(
 		uploadList.map(item => uploadFile(item))
 	)
 	console.log('Why are all fields capitalized?')
 	console.log(result)
+
+	console.log('.. but other endpoints are *NOT* capitalized?')
+	let site
+	try {
+		site = await client.getSite({ site_id })
+	} catch (e) {
+		console.log(e.json)
+	}
+	console.log(site)
 
 }
 
